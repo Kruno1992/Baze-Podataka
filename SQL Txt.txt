@@ -1,0 +1,43 @@
+CREATE DATABASE "Game and Studio"
+
+CREATE TABLE "Game"
+(
+"Id" uniqueidentifier not null PRIMARY KEY,
+"PublishingStudio" varchar(30) not null,
+"Name" varchar(45) not null,
+"Price" decimal not null
+);
+
+CREATE TABLE "Genre"
+(
+"Id" uniqueidentifier not null PRIMARY KEY,
+"Name" varchar(55) not null,
+"Popularity" varchar(255) not null,
+"Player Number" int not null,
+);
+
+CREATE TABLE "GameGenre"
+(
+"Id" uniqueidentifier not null PRIMARY KEY,
+"GameId" uniqueidentifier not null,
+"GenreId" uniqueidentifier not null,
+CONSTRAINT "FK_GameGenre_Game_GameId" FOREIGN KEY ("GameId") REFERENCES "Game"("Id"),
+CONSTRAINT "FK_GameGenre_Genre_GenreId" FOREIGN KEY ("GenreId") REFERENCES "Genre"("Id")
+);
+
+CREATE TABLE "Player"
+(
+"Id" uniqueidentifier not null PRIMARY KEY,
+"FavouriteGenreId" uniqueidentifier not null,
+"SpendingMoney" decimal not null,
+"BoughtCopies" int not null,
+CONSTRAINT "FK_Player_Genre_FavouriteGenreId" FOREIGN KEY ("FavouriteGenreId") REFERENCES "Genre"("Id")
+);
+
+CREATE TABLE UserInfo
+(
+"Id" uniqueidentifier not null PRIMARY KEY,
+"Username" varchar(100) not null,
+"Password" varchar(50) not null,
+CONSTRAINT "FK_UserInfo_Player_Id" FOREIGN KEY ("Id") REFERENCES "Player"("Id")
+);
