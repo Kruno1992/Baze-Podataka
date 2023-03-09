@@ -1,0 +1,72 @@
+CREATE DATABASE Vježba
+
+CREATE TABLE People
+(
+"Id" uniqueidentifier not null PRIMARY KEY,
+"Name" varchar(50) not null,
+"Surname" varchar(40) not null,
+"Age" int not null,
+"BirthPlace" varchar(60) not null,
+);
+
+CREATE TABLE PlaceofBirth
+(
+"Id" uniqueidentifier not null PRIMARY KEY,
+"CityName" varchar(50) not null,
+"Citizens" int not null,
+"Buildings" int null,
+FOREIGN KEY ("Id") REFERENCES People("Id")
+);
+
+ALTER TABLE People
+ADD Calculation int;
+
+UPDATE People
+SET Calculation = (select dbo.generateRandomNumber(5,90,rand()))
+WHERE Calculation is null;
+
+--CRUD OPERATIONS--
+--CREATE
+DECLARE @id uniqueidentifier;
+SET @id=newid();
+INSERT INTO People ("Id","Name","Surname","Age","BirthPlace") VALUES (@id,'Ivan','Kotris',23,'Osijek');
+INSERT INTO PlaceofBirth ("Id","CityName","Citizens") VALUES (@id,'Osijek',10000);
+SET @id=newid();
+INSERT INTO People ("Id","Name","Surname","Age","BirthPlace") VALUES (@id,'Duje','Dujić',31,'Split');
+INSERT INTO PlaceofBirth ("Id","CityName","Citizens") VALUES (@id,'Split',500000);
+
+--JOINS--
+
+SELECT People.Surname,PlaceofBirth.CityName
+FROM People
+INNER JOIN PlaceofBirth
+ON People.Surname = PlaceofBirth.CityName;
+
+SELECT People.Surname,People.Age,People.BirthPlace,PlaceofBirth.CityName,PlaceofBirth.Citizens,PlaceofBirth.Buildings
+FROM People
+LEFT JOIN PlaceofBirth
+ON People.Surname = PlaceofBirth.CityName;
+
+SELECT People.Surname,People.Age,People.BirthPlace,PlaceofBirth.CityName,PlaceofBirth.Citizens,PlaceofBirth.Buildings
+FROM People
+RIGHT JOIN PlaceofBirth
+ON People.Surname = PlaceofBirth.CityName;
+
+SELECT People.Surname,People.Age,People.BirthPlace,PlaceofBirth.CityName,PlaceofBirth.Citizens,PlaceofBirth.Buildings
+FROM People
+FULL OUTER JOIN PlaceofBirth
+ON People.Surname = PlaceofBirth.CityName;
+
+
+
+CREATE FUNCTION "generateRandomNumber"(@minValue int, @maxValue int, @rand float)
+returns int
+AS
+BEGIN
+declare @value integer;
+set @value=(SELECT FLOOR(@rand*(@maxValue-@minValue+1))+@minValue);
+return @value;
+END;
+
+
+select dbo.generateRandomNumber(5,90,rand())
