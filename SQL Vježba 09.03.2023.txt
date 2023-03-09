@@ -57,3 +57,8 @@ SELECT BuyerData.RequestedId,ItemsSupply.ItemNumber
 FROM BuyerData
 INNER JOIN ItemsSupply
 ON BuyerData.RequestedId = ItemsSupply.ItemNumber;
+
+SELECT BuyerData.RequestedId,BuyerData.BuyerName,ItemsSupply.ItemNumber,ItemsSupply.PiecesLeft
+FROM BuyerData
+LEFT JOIN ItemsSupply
+ON BuyerData.RequestedId = ItemsSupply.ItemNumber;
