@@ -1,0 +1,59 @@
+CREATE DATABASE WorkShop
+
+CREATE TABLE BuyerData
+(
+"Id" int not null IDENTITY PRIMARY KEY,
+"BuyerName" varchar(60) not null,
+"BuyerSurname" varchar(50) not null,
+"RequestedId" int not null,
+);
+
+CREATE TABLE ItemsSupply
+(
+"Id" int not null IDENTITY PRIMARY KEY,
+"ItemName" varchar(50) not null,
+"Description" varchar(100) not null,
+"Price" decimal not null,
+"PiecesLeft" int not null,
+"ItemNumber" int not null,
+);
+
+CREATE TABLE Ordering
+(
+"Id" int not null PRIMARY KEY,
+"OrderId" int not null,
+"ItemSupplyId" int not null,
+CONSTRAINT "FK_BuyersItemSupply_OrderId" FOREIGN KEY (OrderId) REFERENCES BuyerData("Id"),
+CONSTRAINT "FK_BuyersItemSpply_ItemSupplyId" FOREIGN KEY (ItemSupplyId) REFERENCES ItemsSupply("Id")
+);
+
+
+--CRUD OPERATIONS--
+--CREATE
+
+INSERT INTO BuyerData ("BuyerName","BuyerSurname","RequestedId") VALUES ('Ivan','Kositar','1224');
+INSERT INTO ItemsSupply ("ItemName","Description","Price","PiecesLeft","ItemNumber") VALUES ('Kosilica','Za kositi travu','399','100','1224');
+
+--UPDATE
+UPDATE ItemsSupply
+SET "ItemName"='Ivan'
+WHERE Price='399';
+
+--DELETE
+DELETE FROM "ItemsSupply"
+WHERE "Price"='399'
+
+--READ
+SELECT * FROM ItemsSupply
+where "Price" between 100 and 400
+and "ItemName" like '%ili%';
+
+SELECT COUNT("PiecesLeft")
+FROM ItemsSupply
+
+--JOINS--
+
+SELECT BuyerData.RequestedId,ItemsSupply.ItemNumber
+FROM BuyerData
+INNER JOIN ItemsSupply
+ON BuyerData.RequestedId = ItemsSupply.ItemNumber;
