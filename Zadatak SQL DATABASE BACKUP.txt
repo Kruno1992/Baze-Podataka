@@ -1,0 +1,87 @@
+CREATE DATABASE ProdajaKarataKazalište
+
+
+CREATE TABLE Theatre
+(
+Id uniqueidentifier not null PRIMARY KEY,
+TicketsSold int not null,
+NumberOfPeople int not null,
+DateOfTheatreShow date not null
+);
+
+CREATE TABLE Proprietor
+(
+Id uniqueidentifier not null PRIMARY KEY,
+ProprietorName varchar(50) not null,
+Surname varchar(50) not null,
+Cashflow int not null,
+TheatreId uniqueidentifier FOREIGN KEY REFERENCES Theatre(Id),
+);
+
+CREATE TABLE Personnel
+(
+Id uniqueidentifier not null PRIMARY KEY,
+PersonnelName varchar(100) not null,
+Surname varchar(100) not null,
+Position varchar(100) not null,
+HoursOfWork int null,
+);
+
+CREATE TABLE TheatrePersonnel
+(
+Id uniqueidentifier not null PRIMARY KEY,
+TheatreId uniqueidentifier FOREIGN KEY REFERENCES Theatre(Id) not null,
+PersonnelId uniqueidentifier FOREIGN KEY REFERENCES Personnel(Id) not null
+);
+
+CREATE TABLE Ticket
+(
+Id uniqueidentifier not null PRIMARY KEY,
+TicketId varchar(30) not null,
+Cost decimal not null,
+NicknameOfUser varchar(50) not null,
+TheatreId uniqueidentifier FOREIGN KEY REFERENCES Theatre(Id)
+);
+
+CREATE TABLE Show
+(
+Id uniqueidentifier not null PRIMARY KEY,
+TicketsSold int not null,
+TicketPrice decimal null,
+SeatingsAvailable int null,
+TicketId uniqueidentifier FOREIGN KEY REFERENCES Ticket(Id)
+);
+
+CREATE TABLE Users
+(
+Id uniqueidentifier not null PRIMARY KEY,
+UserTicketNumber varchar(40) not null,
+UserId varchar(100) not null,
+UserPaymentMethod varchar(100) not null,
+
+);
+
+CREATE TABLE TicketUsers
+(
+Id uniqueidentifier not null PRIMARY KEY,
+TicketNumber uniqueidentifier FOREIGN KEY REFERENCES Ticket(Id) not null,
+UserUniqueId uniqueidentifier FOREIGN KEY REFERENCES Users(Id) not null
+);
+
+CREATE TABLE UserAddress
+(
+Id uniqueidentifier not null PRIMARY KEY,
+City varchar(50) not null,
+StreetName varchar(70) not null,
+HouseNumber varchar(200) not null,
+UserId uniqueidentifier FOREIGN KEY REFERENCES Users(Id)
+);
+
+CREATE TABLE UserInfo
+(
+Id uniqueidentifier not null PRIMARY KEY,
+UserInfoName varchar(50) not null,
+Surname varchar(50) not null,
+Birthday date not null
+FOREIGN KEY (Id) REFERENCES Users(Id)
+);
