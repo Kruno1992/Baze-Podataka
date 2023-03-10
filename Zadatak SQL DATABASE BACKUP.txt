@@ -31,7 +31,10 @@ CREATE TABLE TheatrePersonnel
 (
 Id uniqueidentifier not null PRIMARY KEY,
 TheatreId uniqueidentifier FOREIGN KEY REFERENCES Theatre(Id) not null,
-PersonnelId uniqueidentifier FOREIGN KEY REFERENCES Personnel(Id) not null
+PersonnelId uniqueidentifier FOREIGN KEY REFERENCES Personnel(Id) not null,
+Paycheck int not null,
+Clocking int not null,
+Earnings int not null
 );
 
 CREATE TABLE Ticket
@@ -65,7 +68,10 @@ CREATE TABLE TicketUsers
 (
 Id uniqueidentifier not null PRIMARY KEY,
 TicketNumber uniqueidentifier FOREIGN KEY REFERENCES Ticket(Id) not null,
-UserUniqueId uniqueidentifier FOREIGN KEY REFERENCES Users(Id) not null
+UserUniqueId uniqueidentifier FOREIGN KEY REFERENCES Users(Id) not null,
+TicketsFree int not null,
+UserCount int not null,
+SalesNumbers int null,
 );
 
 CREATE TABLE UserAddress
@@ -85,3 +91,90 @@ Surname varchar(50) not null,
 Birthday date not null
 FOREIGN KEY (Id) REFERENCES Users(Id)
 );
+
+--CRUD OPERATIONS--
+--CREATE
+DECLARE @id uniqueidentifier;
+SET @id=newid();
+
+INSERT INTO Theatre(Id,TicketsSold,NumberOfPeople,DateOfTheatreShow)
+VALUES
+(newid(),100,450,'2023-05-05'),
+(newid(),150,450,'2023-01-01'),
+(newid(),200,450,'2023-03-03');
+
+INSERT INTO Proprietor(Id,ProprietorName,Surname,Cashflow)
+VALUES
+(newid(),'Ivan','Zelin',100000),
+(newid(),'Marko','Ivanic',100000),
+(newid(),'Zdenko','Prdic',100000);
+
+INSERT INTO Personnel(Id,PersonnelName,Surname,Position,HoursOfWork)
+VALUES
+(newid(),'Jusuf','Begovic','Janitor',10),
+(newid(),'Zdena','Rosof','Designer',8),
+(newid(),'Josipa','Mihaljevic','Host',12);
+
+INSERT INTO TheatrePersonnel(Id,Paycheck,Clocking,Earnings,TheatreId,PersonnelId)
+VALUES
+(newid(),3500,167,10000,(SELECT Id FROM Theatre WHERE TicketsSold=100),(SELECT Id FROM Personnel WHERE HoursOfWork=10)),
+(newid(),8000,150,15000,(SELECT Id FROM Theatre WHERE TicketsSold=150),(SELECT Id FROM Personnel WHERE HoursOfWork=8)),
+(newid(),10000,160,20000,(SELECT Id FROM Theatre WHERE TicketsSold=200),(SELECT Id FROM Personnel WHERE HoursOfWork=12));
+
+INSERT INTO Ticket(Id,TicketId,Cost,NicknameOfUser,TheatreId
+VALUES
+(newid(),'114reet',50.55,'Czar100','1008r'),
+(newid(),'115reet',50.55,'Ratto222','1000r'),
+(newid(),'116reet',50.55,'Mich34','999r');
+
+INSERT INTO Show(Id,TicketsSold,TicketPrice,SeatingsAvailable)
+VALUES
+(newid(),100,50.55,450),
+(newid(),200,50.55,450),
+(newid(),300,50.55,450);
+
+INSERT INTO Users(Id,UserTicketNumber,UserId,UserPaymentMethod)
+VALUES
+(newid(),'114reet','Czar100','Card'),
+(newid(),'115reet','Ratto222','Card'),
+(newid(),'116reet','Mich34','Card');
+
+INSERT INTO TicketUsers(Id,TicketsFree,UserCount,SalesNumbers,TicketNumber,UserUniqueId)
+VALUES
+(newid(),350,100,100,(SELECT Id FROM Ticket WHERE Cost=50.55),(SELECT Id FROM Users WHERE UserPaymentMethod='Card')),
+(newid(),250,250,250,(SELECT Id FROM Ticket WHERE Cost=50.55),(SELECT Id FROM Users WHERE UserPaymentMethod='Card')),
+(newid(),150,300,300,(SELECT Id FROM Ticket WHERE Cost=50.55),(SELECT Id FROM Users WHERE UserPaymentMethod='Card'));
+
+INSERT INTO UserAddress(Id,City,StreetName,HouseNumber,UserId)
+VALUES
+(newid(),'Osijek','Ivanisevica','31B','Czar100'),
+(newid(),'Zagreb','Turkaljeva','100A','Ratto222'),
+(newid(),'Split','Slobode','22A','Mich34');
+
+INSERT INTO UserInfo(Id,UserInfoName,Surname,Birthday)
+VALUES
+(newid(),'Luka','Makalj','1990-05-05'),
+(newid(),'Matko','Ruko','1988-02-02'),
+(newid(),'Ratko','Balj','1991-01-01');
+
+--JOINS--
+
+SELECT Ticket.TicketId,Users.UserId
+FROM Ticket
+INNER JOIN Users
+ON Ticket.TicketId = Users.UserId;
+
+SELECT Ticket.TicketId,Users.UserId
+FROM Ticket
+LEFT JOIN Users
+ON Ticket.TicketId = Users.UserId;
+
+SELECT Ticket.TicketId,Users.UserId
+FROM Ticket
+RIGHT JOIN Users
+ON Ticket.TicketId = Users.UserId;
+
+SELECT Ticket.TicketId,Users.UserId
+FROM Ticket
+FULL OUTER JOIN Users
+ON Ticket.TicketId = Users.UserId;
